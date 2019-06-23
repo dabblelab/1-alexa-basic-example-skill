@@ -1,5 +1,12 @@
-/* eslint-disable  func-names */
-/* eslint-disable  no-console */
+ /* 
+ * Copyright (C) 2019 Dabble Lab - All Rights Reserved
+ * You may use, distribute and modify this code under the 
+ * terms and conditions defined in file 'LICENSE.txt', which 
+ * is part of this source code package.
+ *
+ * For additional copyright information please
+ * visit : http://dabblelab.com/copyright
+ */
 
 const Alexa = require('ask-sdk-core');
 
@@ -8,7 +15,7 @@ const LaunchRequestHandler = {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
   },
   handle(handlerInput) {
-    const speechText = 'Hello there. What is your name?';
+    const speechText = `Hi what's is your name?`;
     const repromptText = 'Can you tell me your name?';
 
     return handlerInput.responseBuilder

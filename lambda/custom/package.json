@@ -1,7 +1,7 @@
 {
-  "name": "dabblelab-basic-starter",
+  "name": "alexa-basic-starter-skill-template",
   "version": "1.0.0",
-  "description": "Basic Alexa Skill Template",
+  "description": "Alexa Basic Starter Skill Template",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

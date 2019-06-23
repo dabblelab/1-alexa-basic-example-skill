@@ -1,0 +1,1 @@
+zip lambda-package.zip -j ./lambda/custom/{index.js,package.json}
