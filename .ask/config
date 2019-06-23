@@ -8,7 +8,9 @@
           "apis": {
             "custom": {
               "endpoint": {
-                "uri": "ask-custom-basic-starter-default"
+                "uri": "ask-custom-basic-starter-default",
+                "handler": "index.handler",
+                "runtime": "nodejs8.10"
               }
             }
           }
