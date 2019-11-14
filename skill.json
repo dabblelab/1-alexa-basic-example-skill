@@ -28,7 +28,9 @@
     "apis": {
       "custom": {
         "endpoint": {
-          "sourceDir": "lambda/custom"
+          "sourceDir": "lambda/custom",
+          "handler": "index.handler",
+          "runtime": "nodejs8.10"
         }
       }
     },

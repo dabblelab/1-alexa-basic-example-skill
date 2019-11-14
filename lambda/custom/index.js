@@ -15,7 +15,7 @@ const LaunchRequestHandler = {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
   },
   handle(handlerInput) {
-    const speechText = `Hi what's is your name?`;
+    const speechText = `Hi what's your name?`;
     const repromptText = 'Can you tell me your name?';
 
     return handlerInput.responseBuilder
