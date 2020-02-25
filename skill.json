@@ -30,7 +30,7 @@
         "endpoint": {
           "sourceDir": "lambda/custom",
           "handler": "index.handler",
-          "runtime": "nodejs10.x"
+          "runtime": "nodejs12.x"
         }
       }
     },
