@@ -1,5 +1,5 @@
 {
-  "name": "alexa-basic-starter-skill-template",
+  "name": "alexa-basic-example-skill",
   "version": "1.0.0",
   "description": "Alexa Basic Starter Skill Template",
   "main": "index.js",
