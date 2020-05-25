@@ -14,7 +14,7 @@
             "keyword2",
             "keyword3"
           ],
-          "name": "basic-starter",
+          "name": "Basic Example Skill",
           "description": "Sample Full Description",
           "smallIconUri": "https://s3.amazonaws.com/cdn.dabblelab.com/img/skill-template-default-sm.png",
           "largeIconUri": "https://s3.amazonaws.com/cdn.dabblelab.com/img/skill-template-default-lg.png"
@@ -28,9 +28,7 @@
     "apis": {
       "custom": {
         "endpoint": {
-          "sourceDir": "lambda/custom",
-          "handler": "index.handler",
-          "runtime": "nodejs12.x"
+          "sourceDir": "lambda/custom"
         }
       }
     },
