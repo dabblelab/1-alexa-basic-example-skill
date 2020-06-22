@@ -1,7 +1,7 @@
- /* 
+/*
  * Copyright (C) 2019 Dabble Lab - All Rights Reserved
- * You may use, distribute and modify this code under the 
- * terms and conditions defined in file 'LICENSE.txt', which 
+ * You may use, distribute and modify this code under the
+ * terms and conditions defined in file 'LICENSE.txt', which
  * is part of this source code package.
  *
  * For additional copyright information please
@@ -15,13 +15,13 @@ const LaunchRequestHandler = {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
   },
   handle(handlerInput) {
-    const speechText = `Hi what's your name?`;
+    const speechText = 'Hi what\'s your name?';
     const repromptText = 'Can you tell me your name?';
 
     return handlerInput.responseBuilder
       .speak(speechText)
       .reprompt(repromptText)
-      .withSimpleCard('Example Card Title', "Example card body content.")
+      .withSimpleCard('Example Card Title', 'Example card body content.')
       .getResponse();
   },
 };
@@ -32,7 +32,6 @@ const MyNameIsIntentHandler = {
       && handlerInput.requestEnvelope.request.intent.name === 'MyNameIsIntent';
   },
   handle(handlerInput) {
-
     const nameSlot = handlerInput.requestEnvelope.request.intent.slots.name.value;
     const speechText = `Hello ${nameSlot}. It's nice to meet you.`;
 
@@ -97,6 +96,21 @@ const ErrorHandler = {
   },
 };
 
+const IntentReflectorHandler = {
+  canHandle(handlerInput) {
+    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
+  },
+  handle(handlerInput) {
+    const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
+    const speakOutput = `You just triggered ${intentName}`;
+
+    return handlerInput.responseBuilder
+      .speak(speakOutput)
+    // .reprompt('add a reprompt if you want to keep the session open for the user to respond')
+      .getResponse();
+  },
+};
+
 const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
@@ -105,7 +119,8 @@ exports.handler = skillBuilder
     MyNameIsIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
-    SessionEndedRequestHandler
+    SessionEndedRequestHandler,
+    IntentReflectorHandler,
   )
   .addErrorHandlers(ErrorHandler)
   .lambda();
