@@ -18,18 +18,43 @@ const languageStrings = require('./languages/languageStrings');
 
 /* HANDLERS */
 
+// This handler responds when required environment variables
+// missing or a .env file has not been created.
+const InvalidConfigHandler = {
+  canHandle(handlerInput) {
+    const attributes = handlerInput.attributesManager.getRequestAttributes();
+
+    const invalidConfig = attributes.invalidConfig || false;
+
+    return invalidConfig;
+  },
+  handle(handlerInput) {
+    const { responseBuilder, attributesManager } = handlerInput;
+    const requestAttributes = attributesManager.getRequestAttributes();
+
+    const speakOutput = requestAttributes.t('ENV_NOT_CONFIGURED');
+
+    return responseBuilder
+      .speak(speakOutput)
+      .getResponse();
+  },
+};
+
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
   },
   handle(handlerInput) {
-    const speechText = 'Hi what\'s your name?';
-    const repromptText = 'Can you tell me your name?';
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+
+    const skillName = requestAttributes.t('SKILL_NAME');
+    const speakOutput = requestAttributes.t('GREETING', { skillName: skillName });
+    const repromptOutput = requestAttributes.t('GREETING_REPROMPT');
 
     return handlerInput.responseBuilder
-      .speak(speechText)
-      .reprompt(repromptText)
-      .withSimpleCard('Example Card Title', 'Example card body content.')
+      .speak(speakOutput)
+      .reprompt(repromptOutput)
+      .withSimpleCard(skillName, speakOutput)
       .getResponse();
   },
 };
@@ -40,11 +65,29 @@ const MyNameIsIntentHandler = {
       && handlerInput.requestEnvelope.request.intent.name === 'MyNameIsIntent';
   },
   handle(handlerInput) {
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+
     const nameSlot = handlerInput.requestEnvelope.request.intent.slots.name.value;
-    const speechText = `Hello ${nameSlot}. It's nice to meet you.`;
+    const speakOutput = requestAttributes.t('GREETING_RESPONSE', { userName: nameSlot });
 
     return handlerInput.responseBuilder
-      .speak(speechText)
+      .speak(speakOutput)
+      .getResponse();
+  },
+};
+
+const AboutIntentHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && handlerInput.requestEnvelope.request.intent.name === 'AboutIntent';
+  },
+  handle(handlerInput) {
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+
+    const speakOutput = requestAttributes.t('ABOUT');
+
+    return handlerInput.responseBuilder
+      .speak(speakOutput)
       .getResponse();
   },
 };
@@ -55,11 +98,14 @@ const HelpIntentHandler = {
       && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
-    const speechText = 'You can introduce yourself by telling me your name';
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+
+    const speakOutput = requestAttributes.t('HELP');
+    const repromptOutput = requestAttributes.t('HELP_REPROMPT');
 
     return handlerInput.responseBuilder
-      .speak(speechText)
-      .reprompt(speechText)
+      .speak(speakOutput)
+      .reprompt(repromptOutput)
       .getResponse();
   },
 };
@@ -71,10 +117,12 @@ const CancelAndStopIntentHandler = {
         || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
   },
   handle(handlerInput) {
-    const speechText = 'Goodbye!';
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+
+    const speakOutput = requestAttributes.t('CANCEL_STOP_RESPONSE');
 
     return handlerInput.responseBuilder
-      .speak(speechText)
+      .speak(speakOutput)
       .getResponse();
   },
 };
@@ -90,32 +138,73 @@ const SessionEndedRequestHandler = {
   },
 };
 
+// This function handles syntax or routing errors. If you receive an error stating the request
+// handler chain is not found, you have not implemented a handler for the intent or included
+// it in the skill builder below
 const ErrorHandler = {
   canHandle() {
     return true;
   },
   handle(handlerInput, error) {
+    console.log(`Error Request: ${JSON.stringify(handlerInput.requestEnvelope.request)}`);
     console.log(`Error handled: ${error.message}`);
 
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    const speakOutput = requestAttributes.t('ERROR');
+    const repromptOutput = requestAttributes.t('ERROR_REPROMPT');
+
     return handlerInput.responseBuilder
-      .speak('Sorry, I can\'t understand the command. Please say again.')
-      .reprompt('Sorry, I can\'t understand the command. Please say again.')
+      .speak(speakOutput)
+      .reprompt(repromptOutput)
       .getResponse();
   },
 };
 
+// This function handles utterances that can't be matched to any other intent handler.
+const FallbackIntentHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.FallbackIntent';
+  },
+  handle(handlerInput) {
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+
+    const speakOutput = requestAttributes.t('FALLBACK');
+    const repromptOutput = requestAttributes.t('FALLBACK_REPROMPT');
+
+    return handlerInput.responseBuilder
+      .speak(speakOutput)
+      .reprompt(repromptOutput)
+      .getResponse();
+  },
+};
+
+// This function is used for testing and debugging. It will echo back an intent name for an
+// intent that does not have a suitable intent handler. a response from this function indicates
+// an intent handler function should be created or modified to handle the user's intent.
 const IntentReflectorHandler = {
   canHandle(handlerInput) {
     return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
   },
   handle(handlerInput) {
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+
     const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
-    const speakOutput = `You just triggered ${intentName}`;
+    const speakOutput = requestAttributes.t('REFLECTOR', { intentName: intentName });
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
-    // .reprompt('add a reprompt if you want to keep the session open for the user to respond')
       .getResponse();
+  },
+};
+
+const InvalidConfigInterceptor = {
+  process(handlerInput) {
+    const result = dotenv.config();
+
+    if (result.error) {
+      handlerInput.attributesManager.setRequestAttributes({ invalidConfig: true });
+    }
   },
 };
 
@@ -159,13 +248,16 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
   .addRequestHandlers(
+    InvalidConfigHandler,
     LaunchRequestHandler,
     MyNameIsIntentHandler,
+    AboutIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler,
+    FallbackIntentHandler,
     IntentReflectorHandler,
   )
   .addErrorHandlers(ErrorHandler)
-  .addRequestInterceptors(LocalizationInterceptor)
+  .addRequestInterceptors(InvalidConfigInterceptor, LocalizationInterceptor)
   .lambda();
