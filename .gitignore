@@ -4,5 +4,4 @@ config.js
 node_modules/
 .ask/
 ask-resources.json
-package-lock.json
 .env
