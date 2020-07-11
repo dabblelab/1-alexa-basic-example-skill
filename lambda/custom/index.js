@@ -9,6 +9,14 @@
  */
 
 const Alexa = require('ask-sdk-core');
+const dotenv = require('dotenv');
+const i18n = require('i18next');
+const sprintf = require('i18next-sprintf-postprocessor');
+
+/* LANGUAGE STRINGS */
+const languageStrings = require('./languages/languageStrings');
+
+/* HANDLERS */
 
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
@@ -111,6 +119,42 @@ const IntentReflectorHandler = {
   },
 };
 
+// This interceptor function is used for supporting different languages and locals.
+// It uses the i18n npm module, along with files in ./lambda/custome/languages/
+// to make enabling support for different languages and locals simpler.
+const LocalizationInterceptor = {
+  process(handlerInput) {
+    const { requestEnvelope, attributesManager } = handlerInput;
+
+    const localizationClient = i18n.use(sprintf).init({
+      lng: requestEnvelope.request.locale,
+      fallbackLng: 'en-US',
+      resources: languageStrings,
+    });
+
+    localizationClient.localize = (...args) => {
+      const values = [];
+
+      for (let i = 1; i < args.length; i += 1) {
+        values.push(args[i]);
+      }
+      const value = i18n.t(args[0], {
+        returnObjects: true,
+        postProcess: 'sprintf',
+        sprintf: values,
+      });
+
+      if (Array.isArray(value)) {
+        return value[Math.floor(Math.random() * value.length)];
+      }
+      return value;
+    };
+
+    const attributes = attributesManager.getRequestAttributes();
+    attributes.t = (...args) => localizationClient.localize(...args);
+  },
+};
+
 const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
@@ -123,4 +167,5 @@ exports.handler = skillBuilder
     IntentReflectorHandler,
   )
   .addErrorHandlers(ErrorHandler)
+  .addRequestInterceptors(LocalizationInterceptor)
   .lambda();
