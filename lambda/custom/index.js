@@ -76,15 +76,15 @@ const MyNameIsIntentHandler = {
   },
 };
 
-const AboutIntentHandler = {
+const LearnMoreIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && handlerInput.requestEnvelope.request.intent.name === 'AboutIntent';
+      && handlerInput.requestEnvelope.request.intent.name === 'LearnMoreIntent';
   },
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
 
-    const speakOutput = requestAttributes.t('ABOUT');
+    const speakOutput = requestAttributes.t('LEARN_MORE');
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
@@ -209,7 +209,7 @@ const InvalidConfigInterceptor = {
 };
 
 // This interceptor function is used for supporting different languages and locals.
-// It uses the i18n npm module, along with files in ./lambda/custome/languages/
+// It uses the i18n npm module, along with files in ./lambda/custom/languages/
 // to make enabling support for different languages and locals simpler.
 const LocalizationInterceptor = {
   process(handlerInput) {
@@ -251,7 +251,7 @@ exports.handler = skillBuilder
     InvalidConfigHandler,
     LaunchRequestHandler,
     MyNameIsIntentHandler,
-    AboutIntentHandler,
+    LearnMoreIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler,

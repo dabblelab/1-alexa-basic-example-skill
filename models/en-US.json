@@ -1,54 +1,59 @@
 {
-    "interactionModel": {
-      "languageModel": {
-        "invocationName": "template one",
-        "types": [
-  
-        ],
-        
-        "intents": [
-          {
-            "name": "AMAZON.NavigateHomeIntent",
-            "samples": [
-  
-            ]
-          },
-          {
-            "name": "AMAZON.CancelIntent",
-            "samples": [
-  
-            ]
-          },
-          {
-            "name": "AMAZON.HelpIntent",
-            "samples": [
-  
-            ]
-          },
-          {
-            "name": "AMAZON.StopIntent",
-            "samples": [
-  
-            ]
-          },
-          {
-            "name":"MyNameIsIntent",
-            "slots":[
-                {
-                    "name":"name",
-                    "type":"AMAZON.US_FIRST_NAME"
-                }
-            ],
-            "samples":[
-                "{name}",
-                "{name} is my name",
-                "my name is {name}",
-                "i am {name}",
-                "you can call me {name}"
-            ]
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "template one",
+      "types": [],
+      "intents": [
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "MyNameIsIntent",
+          "slots": [
+            {
+              "name": "name",
+              "type": "AMAZON.US_FIRST_NAME"
+            }
+          ],
+          "samples": [
+            "{name}",
+            "{name} is my name",
+            "my name is {name}",
+            "i am {name}",
+            "you can call me {name}"
+          ]
+        },
+        {
+          "name": "LearnMoreIntent",
+          "slots": [
+          ],
+          "samples": [
+            "learn more",
+            "tell me more",
+            "can you tell me more",
+            "i'd like to learn more",
+            "please tell me more",
+            "more about this skill"
+          ]
         }
-        ]
-      }
+      ]
     }
   }
-  
+}
