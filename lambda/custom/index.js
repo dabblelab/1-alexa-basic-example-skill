@@ -9,6 +9,7 @@
  */
 
 const Alexa = require('ask-sdk-core');
+const persistenceAdapter = require('ask-sdk-s3-persistence-adapter');
 const dotenv = require('dotenv');
 const i18n = require('i18next');
 const sprintf = require('i18next-sprintf-postprocessor');
@@ -47,9 +48,17 @@ const LaunchRequestHandler = {
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
 
+    const attributesManager = handlerInput.attributesManager;
+    const sessionAttributes = attributesManager.getSessionAttributes() || {};
+    
+    const userName = sessionAttributes.hasOwnProperty('userName') ? sessionAttributes.userName : undefined;
     const skillName = requestAttributes.t('SKILL_NAME');
-    const speakOutput = requestAttributes.t('GREETING', { skillName: skillName });
-    const repromptOutput = requestAttributes.t('GREETING_REPROMPT');
+
+    let speakOutput = requestAttributes.t('GREETING_UNKNOWN_USER', { skillName: skillName });
+    if (userName) speakOutput = requestAttributes.t('GREETING', { userName: userName });
+
+    let repromptOutput = requestAttributes.t('GREETING_UNKNOWN_USER_REPROMPT');
+    if (userName) repromptOutput = requestAttributes.t('GREETING_REPROMPT');
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
@@ -64,11 +73,21 @@ const MyNameIsIntentHandler = {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
       && handlerInput.requestEnvelope.request.intent.name === 'MyNameIsIntent';
   },
-  handle(handlerInput) {
+  async handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
 
-    const nameSlot = handlerInput.requestEnvelope.request.intent.slots.name.value;
-    const speakOutput = requestAttributes.t('GREETING_RESPONSE', { userName: nameSlot });
+    const userName = handlerInput.requestEnvelope.request.intent.slots.name.value;
+
+    const speakOutput = requestAttributes.t('GREETING_RESPONSE', { userName: userName });
+
+    const attributesManager = handlerInput.attributesManager;
+        
+    let userAttributes = {
+        "userName": userName
+    };
+
+    attributesManager.setPersistentAttributes(userAttributes);
+    await attributesManager.savePersistentAttributes(); 
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
@@ -257,6 +276,9 @@ exports.handler = skillBuilder
     SessionEndedRequestHandler,
     FallbackIntentHandler,
     IntentReflectorHandler,
+  )
+  .withPersistenceAdapter(
+    new persistenceAdapter.S3PersistenceAdapter({bucketName:process.env.S3_PERSISTENCE_BUCKET})
   )
   .addErrorHandlers(ErrorHandler)
   .addRequestInterceptors(InvalidConfigInterceptor, LocalizationInterceptor)
