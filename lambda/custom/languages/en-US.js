@@ -38,7 +38,7 @@ module.exports = {
       'Good bye',
       'Okay. I\'ll be here if you need me.',
     ],
-    ENV_NOT_CONFIGURED: 'The environment for this skill is not properly configured. Most likely, you just need to rename the example.env file to just .env. Please see the readme file for help.',
+    ENV_NOT_CONFIGURED: 'The environment for this skill is not properly configured. Most likely, you just need to rename the example dot ENV file to just dot ENV. Please see the readme file for help.',
     ERROR: 'Sorry, I wasn\'t able to handel your last request. Could you say that again?',
     ERROR_REPROMPT: 'Could you say that again?',
   },

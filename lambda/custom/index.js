@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Dabble Lab - All Rights Reserved
+ * Copyright (C) 2020 Dabble Lab - All Rights Reserved
  * You may use, distribute and modify this code under the
  * terms and conditions defined in file 'LICENSE.txt', which
  * is part of this source code package.
