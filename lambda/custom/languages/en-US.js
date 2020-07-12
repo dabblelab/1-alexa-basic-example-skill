@@ -2,7 +2,7 @@ module.exports = {
   translation: {
     SKILL_NAME: 'the Dabble Lab starter template',
     GREETING_UNKNOWN_USER: [
-      'Hello %(userName)s. Welcome to %(skillName)s. You can tell me your name or say learn more to learn more about this skill.',
+      'Welcome to %(skillName)s. You can tell me your name or say learn more to learn more about this skill.',
     ],
     GREETING_UNKNOWN_USER_REPROMPT: [
       'What is your name?',

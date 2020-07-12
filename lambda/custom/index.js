@@ -45,11 +45,11 @@ const LaunchRequestHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
   },
-  handle(handlerInput) {
+  async handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
 
     const attributesManager = handlerInput.attributesManager;
-    const sessionAttributes = attributesManager.getSessionAttributes() || {};
+    const sessionAttributes = await attributesManager.getPersistentAttributes() || {};
     
     const userName = sessionAttributes.hasOwnProperty('userName') ? sessionAttributes.userName : undefined;
     const skillName = requestAttributes.t('SKILL_NAME');
