@@ -25,6 +25,18 @@
           "samples": []
         },
         {
+          "name": "AMAZON.RepeatIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.YesIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NoIntent",
+          "samples": []
+        },
+        {
           "name": "MyNameIsIntent",
           "slots": [
             {
@@ -42,8 +54,7 @@
         },
         {
           "name": "LearnMoreIntent",
-          "slots": [
-          ],
+          "slots": [],
           "samples": [
             "learn more",
             "tell me more",

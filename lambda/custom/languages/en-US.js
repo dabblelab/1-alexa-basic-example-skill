@@ -16,6 +16,12 @@ module.exports = {
     GREETING_RESPONSE: [
       'Hello %(userName)s. It\'s nice to meet you.',
     ],
+    REPEAT: [
+      'I said... %(repeatSpeakOutput)s',
+    ],
+    REPEAT_REPROMPT: [
+      '%(repeatRepromptOutput)s',
+    ],
     HELP: [
       'You can tell me your name, or say learn more, to learn more about this skill.',
     ],

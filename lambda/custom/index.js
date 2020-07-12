@@ -47,11 +47,10 @@ const LaunchRequestHandler = {
   },
   async handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-
-    const attributesManager = handlerInput.attributesManager;
-    const sessionAttributes = await attributesManager.getPersistentAttributes() || {};
+    const persistentAttributes = await handlerInput.attributesManager.getPersistentAttributes() || {};
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes() || {};
     
-    const userName = sessionAttributes.hasOwnProperty('userName') ? sessionAttributes.userName : undefined;
+    const userName = persistentAttributes.hasOwnProperty('userName') ? persistentAttributes.userName : undefined;
     const skillName = requestAttributes.t('SKILL_NAME');
 
     let speakOutput = requestAttributes.t('GREETING_UNKNOWN_USER', { skillName: skillName });
@@ -59,6 +58,10 @@ const LaunchRequestHandler = {
 
     let repromptOutput = requestAttributes.t('GREETING_UNKNOWN_USER_REPROMPT');
     if (userName) repromptOutput = requestAttributes.t('GREETING_REPROMPT');
+
+    sessionAttributes.repeatSpeakOutput = speakOutput;
+    sessionAttributes.repeatRepromptOutput = repromptOutput;   
+    handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
@@ -107,6 +110,31 @@ const LearnMoreIntentHandler = {
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
+      .getResponse();
+  },
+};
+
+// This handler is used to handle the AMAZON.RepeatIntent. It lets uses ask Alexa to repeat the
+// last thing that was said. For a video tutorial on using the AMAZON.RepeatIntent visit:
+// https://dabblelab.com/tutorials/using-the-amazon-repeatintent-in-alexa-skills-195
+const RepeatIntentHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.RepeatIntent';
+  },
+  handle(handlerInput) {
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes() || {};
+
+    const repeatSpeakOutput = sessionAttributes.repeatSpeakOutput;
+    const repeatRepromptOutput = sessionAttributes.repeatRepromptOutput;   
+
+    const speakOutput = requestAttributes.t('REPEAT', {repeatSpeakOutput: repeatSpeakOutput});
+    const repromptOutput = requestAttributes.t('REPEAT_REPROMPT', {repeatRepromptOutput: repeatRepromptOutput});
+
+    return handlerInput.responseBuilder
+      .speak(speakOutput)
+      .reprompt(repromptOutput)
       .getResponse();
   },
 };
@@ -271,6 +299,7 @@ exports.handler = skillBuilder
     LaunchRequestHandler,
     MyNameIsIntentHandler,
     LearnMoreIntentHandler,
+    RepeatIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler,
