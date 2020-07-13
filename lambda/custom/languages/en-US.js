@@ -32,7 +32,7 @@ module.exports = {
       'What is your name?',
     ],
     REFLECTOR: [
-      'You just triggered the %(intentName)s intent. You\'re hearing this response because the %(intentName)s intent does not have an intent handler yet.',
+      'You just triggered %(intentName)s. You\'re hearing this response because the intent named: %(intentName)s does not have an intent handler yet.',
     ],
     FALLBACK: [
       'Sorry, I didn\'t understand that. You can tell me your name, or say learn more, to learn more about this skill.',
