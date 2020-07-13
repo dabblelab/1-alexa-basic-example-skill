@@ -11,7 +11,7 @@ module.exports = {
       'Hello %(userName)s. Welcome back. To learn more about this skill you can say, learn more.',
     ],
     GREETING_REPROMPT: [
-      'To learn more you can say, learn more.',
+      'Would you like to learn more?',
     ],
     GREETING_RESPONSE: [
       'Hello %(userName)s. It\'s nice to meet you.',
@@ -21,6 +21,9 @@ module.exports = {
     ],
     REPEAT_REPROMPT: [
       '%(repeatRepromptOutput)s',
+    ],
+    NO: [
+      'Alright, I\'ll be here if you need me',
     ],
     HELP: [
       'You can tell me your name, or say learn more, to learn more about this skill.',

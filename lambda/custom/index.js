@@ -139,6 +139,32 @@ const RepeatIntentHandler = {
   },
 };
 
+const YesNoIntentHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.YesIntent'
+        || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.NoIntent');
+  },
+  handle(handlerInput) {
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+
+    let speakOutput = '';
+
+    if (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.YesIntent') {
+      speakOutput = requestAttributes.t('LEARN_MORE');
+    }
+
+    if (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.NoIntent') {
+      speakOutput = requestAttributes.t('NO');
+    }
+
+    return handlerInput.responseBuilder
+      .speak(speakOutput)
+      .getResponse();
+  },
+};
+
 const HelpIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -299,6 +325,7 @@ exports.handler = skillBuilder
     LaunchRequestHandler,
     MyNameIsIntentHandler,
     LearnMoreIntentHandler,
+    YesNoIntentHandler,
     RepeatIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
