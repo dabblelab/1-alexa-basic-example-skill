@@ -152,7 +152,7 @@ const YesNoIntentHandler = {
     let speakOutput = '';
 
     if (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.YesIntent') {
-      speakOutput = requestAttributes.t('LEARN_MORE');
+      return LearnMoreIntentHandler.handle(handlerInput);
     }
 
     if (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.NoIntent') {
