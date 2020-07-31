@@ -2,7 +2,11 @@
 
 This is a template for building custom Alexa skills using Node.js and the ASK SDK (v2). The goals of this template are to provide a basic starting point for new skill projects and a tool for learning code patterns that are common in Alexa development.
 
-## What this template provides
+<a href="https://alexa.dabble.dev/deploy?id=1">
+    <img src="https://cdn.dabblelab.com/img/alexa-deploy-button.jpg" width="200" />
+</a>
+
+## Template features
 
 - Support for internationalization (i18n)
 - Support for using environment variables 
